@@ -15,7 +15,7 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/detail">
+          <Route path="/detail/:movieId">
             <Detail />
           </Route>
           <Route path="/">

@@ -1,55 +1,44 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { getAllMovies } from '../app/movies/movieSlice';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { MoviesActionTypes } from '../actions/moviesActions';
+const APIKEY = 'bd46237aff2b1ecf6383b42e29457ae8';
+const img_300 = "https://image.tmdb.org/t/p/w300";
 
 const Movies = () => {
+
+    const movies = useSelector((state) => state.movies.moviesData)
+    const dispatch = useDispatch()
+
+    const fetchTrending = async () => {
+        const response = await axios.get(`https://api.themoviedb.org/3/trending/movie/week?api_key=${APIKEY}`);
+
+        dispatch({type: MoviesActionTypes.FETCH_MOVIES, payload: response.data.results})
+    }
+
+    useEffect(() => {
+       fetchTrending()
+    }, [])
+
+    console.log(movies)
+
 
     return (
         <Container>
             <h4>Recommended for You</h4>
             <Content>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
-                <Link to="/detail">
-                    <Wrap>
-                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/6EA416AD3B15FCC1BADC817A932A57FFF707556DB2233FFCB4CFEB7C8EEDE23C/scale?width=400&aspectRatio=1.78&format=jpeg" />
-                    </Wrap>
-                </Link>
+                {
+                    movies && movies.map((data) => (
+                        <Link to = {`/detail/${data.id}`}>
+                            <Wrap >
+                                <img src={`${img_300}/${data.poster_path}`} />
+                            </Wrap>
+                        </Link>
+                    ))
+                }
+
             </Content>
         </Container>
     )
@@ -76,8 +65,8 @@ const Wrap = styled.div`
     transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
     
     img{
-        width: 100%;
-        height: 100%;
+        width: 300px;
+        height: 150px;
         object-fit: cover;
     }
     

@@ -1,11 +1,35 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import {MoviesActionTypes} from '../actions/moviesActions'
+const APIKEY = 'bd46237aff2b1ecf6383b42e29457ae8';
+const imgSrc = "https://image.tmdb.org/t/p/w300";
+
 
 const Detail = () => {
+    const movieDetail = useSelector((state) => state.selectedMovie.selectedMovie)
+    const {movieId} = useParams()
+
+    const dispatch = useDispatch()
+
+    const fetchingData = async () => {
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${APIKEY}`)
+
+        dispatch({type: MoviesActionTypes.SELECTED_MOVIES, payload: response.data})
+    }
+
+    useEffect(() => {
+        if(movieId && movieId != "") fetchingData()
+        return dispatch({type: MoviesActionTypes.REMOVE_MOVIE, payload: {}})
+    },[])
+
+    console.log(movieDetail)
     return (
         <Container>
             <Background>
-                <img src='https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/4F39B7E16726ECF419DD7C49E011DD95099AA20A962B0B10AA1881A70661CE45/scale?width=1440&aspectRatio=1.78&format=jpeg' />
+                <img src={`${imgSrc}/${movieDetail.poster_path}`} />
             </Background>
 
             <ImageTitle>
@@ -27,9 +51,15 @@ const Detail = () => {
                     <img src="/images/group-icon.png" />
                 </GroupWatchButton>
             </Controls>
-            <SubTitle>2018 | 7m | Family, Fantasy, Kids, Animation</SubTitle>
+            <SubTitle>
+                <h2>{movieDetail.title}</h2>
+                {movieDetail.release_date} | {movieDetail.runtime}m | {
+                  movieDetail.genres && movieDetail.genres.map((data) => (
+                       data.name + ' | '
+                   )) 
+                }</SubTitle>
             <Description>
-                Find chinese mom stock images in HD and millions of other royalty-free stock photos, illustrations and vectors in the Shutterstock collection.
+                {movieDetail.overview}
             </Description>
         </Container>
     )
