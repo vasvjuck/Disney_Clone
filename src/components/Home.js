@@ -3,24 +3,9 @@ import styled from 'styled-components';
 import ImageSlider from './ImageSlider';
 import Viewers from './Viewers';
 import Movies from './Movies';
-import movieApi from '../api/movieAPI';
-import { APIKey } from '../api/movieApiKey';
 import { useDispatch } from 'react-redux';
-import { addMovies } from '../app/movies/movieSlice';
 
 const Home = () => {
-    const movieText = "Harry";
-    const dispatch = useDispatch();
-    useEffect(() => {
-        const fetchMovies = async () => {
-            const response = await movieApi.get(`?apiKey=${APIKey}&s=${movieText}&type=movie`)
-                .catch((err) => {
-                    console.log("Err: ", err)
-                });
-            dispatch(addMovies(response.data))
-        };
-        fetchMovies();
-    }, [])
 
     return (
         <Container>
