@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { MoviesActionTypes } from '../actions/moviesActions';
 const APIKEY = 'bd46237aff2b1ecf6383b42e29457ae8';
-const img_300 = "https://image.tmdb.org/t/p/w300";
+const img_300 = "https://image.tmdb.org/t/p/w1280";
 
 const Movies = () => {
 
@@ -15,11 +15,11 @@ const Movies = () => {
     const fetchTrending = async () => {
         const response = await axios.get(`https://api.themoviedb.org/3/trending/movie/week?api_key=${APIKEY}`);
 
-        dispatch({type: MoviesActionTypes.FETCH_MOVIES, payload: response.data.results})
+        dispatch({ type: MoviesActionTypes.FETCH_MOVIES, payload: response.data.results })
     }
 
     useEffect(() => {
-       fetchTrending()
+        fetchTrending()
     }, [])
 
     console.log(movies)
@@ -31,7 +31,7 @@ const Movies = () => {
             <Content>
                 {
                     movies && movies.map((data) => (
-                        <Link to = {`/detail/${data.id}`}>
+                        <Link to={`/detail/${data.id}`}>
                             <Wrap >
                                 <img src={`${img_300}/${data.poster_path}`} />
                             </Wrap>

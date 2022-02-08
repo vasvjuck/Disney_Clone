@@ -1,66 +1,69 @@
 import axios from 'axios';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import {MoviesActionTypes} from '../actions/moviesActions'
+import { MoviesActionTypes } from '../actions/moviesActions'
 const APIKEY = 'bd46237aff2b1ecf6383b42e29457ae8';
-const imgSrc = "https://image.tmdb.org/t/p/w300";
+const imgSrc = "https://image.tmdb.org/t/p/w1280";
 
 
 const Detail = () => {
     const movieDetail = useSelector((state) => state.selectedMovie.selectedMovie)
-    const {movieId} = useParams()
+    const { movieId } = useParams()
 
     const dispatch = useDispatch()
 
     const fetchingData = async () => {
         const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${APIKEY}`)
 
-        dispatch({type: MoviesActionTypes.SELECTED_MOVIES, payload: response.data})
+        dispatch({ type: MoviesActionTypes.SELECTED_MOVIES, payload: response.data })
     }
 
     useEffect(() => {
-        if(movieId && movieId != "") fetchingData()
-        return dispatch({type: MoviesActionTypes.REMOVE_MOVIE, payload: {}})
-    },[])
+        if (movieId && movieId != "") fetchingData()
+        return dispatch({ type: MoviesActionTypes.REMOVE_MOVIE, payload: {} })
+    }, [])
 
     console.log(movieDetail)
     return (
         <Container>
-            <Background>
-                <img src={`${imgSrc}/${movieDetail.poster_path}`} />
-            </Background>
-
-            <ImageTitle>
-                <img src='https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78' />
-            </ImageTitle>
-            <Controls>
-                <PlayButton>
-                    <img src='/images/play-icon-black.png' />
-                    <span>PLAY</span>
-                </PlayButton>
-                <TrailerButton>
-                    <img src='/images/play-icon-white.png' />
-                    <span>Trailer</span>
-                </TrailerButton>
-                <AddButton>
-                    <span>+</span>
-                </AddButton>
-                <GroupWatchButton>
-                    <img src="/images/group-icon.png" />
-                </GroupWatchButton>
-            </Controls>
-            <SubTitle>
-                <h2>{movieDetail.title}</h2>
-                {movieDetail.release_date} | {movieDetail.runtime}m | {
-                  movieDetail.genres && movieDetail.genres.map((data) => (
-                       data.name + ' | '
-                   )) 
-                }</SubTitle>
-            <Description>
-                {movieDetail.overview}
-            </Description>
+            <MainContent>
+                <ImageTitle>
+                    <img src='https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78' />
+                </ImageTitle>
+                <Controls>
+                    <PlayButton>
+                        <img src='/images/play-icon-black.png' />
+                        <span>PLAY</span>
+                    </PlayButton>
+                    <TrailerButton>
+                        <img src='/images/play-icon-white.png' />
+                        <span>Trailer</span>
+                    </TrailerButton>
+                    <AddButton>
+                        <span>+</span>
+                    </AddButton>
+                    <GroupWatchButton>
+                        <img src="/images/group-icon.png" />
+                    </GroupWatchButton>
+                </Controls>
+                <SubTitle>
+                    <h2>{movieDetail.title}</h2>
+                    {movieDetail.release_date} | {movieDetail.runtime}m | {
+                        movieDetail.genres && movieDetail.genres.map((data) => (
+                            data.name + ' | '
+                        ))
+                    }</SubTitle>
+                <Description>
+                    {movieDetail.overview}
+                </Description>
+            </MainContent>
+            <ImgContainer>
+                <Background>
+                    <img src={`${imgSrc}/${movieDetail.poster_path}`} />
+                </Background>
+            </ImgContainer>
         </Container>
     )
 }
@@ -71,21 +74,27 @@ const Container = styled.div`
     position: relative;
     min-height: calc(100vh- 70px);
     padding: 0 calc(3.5vw + 5px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between
 `
+const MainContent = styled.div``
+const ImgContainer = styled.div``
+
 const Background = styled.div`
     position: fixed;
     top: 0;
-    left: 0;
     right: 0;
     bottom: 0;
     z-index: -1;
     opacity: 0.8;
-
+    width: 600px;
     img{
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
     }
+    
 `
 
 const ImageTitle = styled.div`

@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { ForkRight, ShoppingCartRounded } from '@mui/icons-material';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { MoviesActionTypes } from '../actions/moviesActions';
 
 
 const Header = () => {
+    const [input, setInput] = useState();
+    const dispatch = useDispatch()
+
+    const handlerOnSubmit = async (e) => {
+        e.preventDefault()
+        if (input) {
+            const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=bd46237aff2b1ecf6383b42e29457ae8&query=${input}`);
+
+            dispatch({ type: MoviesActionTypes.FETCH_MOVIES, payload: response.data.results })
+        }
+        setInput('');
+    }
+
+    const handlerOnChange = (e) => {
+        setInput(e.target.value);
+
+        console.log(input)
+    }
+
     return (
         <Nav>
             <Link to="/"><Logo src="/images/logo.svg" /></Link>
@@ -33,6 +56,17 @@ const Header = () => {
                     <span>Series</span>
                 </a>
             </NavMenu>
+            <SearchBar>
+                <form onSubmit={handlerOnSubmit}>
+                    <input
+                        type="text"
+                        placeholder='Search...'
+                        value={input}
+                        onChange={handlerOnChange}
+                    />
+                </form>
+            </SearchBar>
+
             <Link to="/login"><UserImg src="/images/user.png" /></Link>
         </Nav>
     )
@@ -41,6 +75,7 @@ const Header = () => {
 export default Header;
 
 const Nav = styled.nav`
+    position: relative;
     height: 70px;
     background: #090b13;
     display: flex;
@@ -48,6 +83,7 @@ const Nav = styled.nav`
     padding: 0 36px;
     overflow-x: hidden;
 `
+
 
 const Logo = styled.img`
     width: 80px;
@@ -100,4 +136,26 @@ const UserImg = styled.img`
     width:48px;
     height:48px;
     border-radius: 50%;
+`
+const SearchBar = styled.div`
+    form{
+        border: 2px solid #22254b;
+        font-family: inherit;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        background-color: #fff;
+        color: #fff;
+        padding: 0.5rem 2rem;
+        margin-right: 85px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    input{
+        border: none;
+        &:focus{
+            outline: none;
+        }
+    }
 `
